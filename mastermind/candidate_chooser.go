@@ -6,20 +6,20 @@ import (
 )
 
 // This is the strategy that governs how the candidate is chosen given a solution space
-type CandidateChooser interface {
-	Choose(solutionSpace []string) string
+type candidateChooser interface {
+	choose(solutionSpace []string) string
 }
 
 type RandomCandidateChooser struct{}
 
-func (chooser RandomCandidateChooser) Choose(solutionSpace []string) string {
+func (chooser RandomCandidateChooser) choose(solutionSpace []string) string {
 	rand.Seed(time.Now().Unix())
 	r := rand.Intn(len(solutionSpace))
 	return solutionSpace[r]
 }
 
-type PremierCandidateChooser struct{}
+type premierCandidateChooser struct{}
 
-func (chooser PremierCandidateChooser) Choose(solutionSpace []string) string {
+func (chooser premierCandidateChooser) choose(solutionSpace []string) string {
 	return solutionSpace[0]
 }

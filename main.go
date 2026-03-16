@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	version = "0.2.0"
+	version = "0.2.1"
 	pegs   = 8
 	colors = 10
 )
@@ -27,10 +27,10 @@ func main() {
 		n := pegs
 		for {
 			s += rand.Intn(colors)
-			n -= 1
-			if n == 0 {
+			if n < 1 {
 				break
 			}
+			n--
 			s *= 10
 		}
 		secret = strconv.Itoa(s)
@@ -39,10 +39,10 @@ func main() {
 	}
 	fmt.Printf("Secret:   %s\n", secret)
 	game := mastermind.Game{
-		Pegs:             pegs,
-		Colors:           "0123456789ABCDEFGKLMNOPQRSTUVXXYZ"[:colors],
-		Secret:           secret,
-		CandidateChooser: &mastermind.RandomCandidateChooser{},
+		Pegs:    pegs,
+		Colors:  "0123456789ABCDEFGKLMNOPQRSTUVXXYZ"[:colors],
+		Secret:  secret,
+		Chooser: &mastermind.RandomCandidateChooser{},
 	}
 	if err := game.Solve(); err != nil {
 		fmt.Println(err)

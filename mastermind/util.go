@@ -21,7 +21,7 @@ func cartesianProduct(sets []string) []string {
 			break
 		}
 		result = append(result, string(item))
-		i += 1
+		i++
 	}
 	return result
 }

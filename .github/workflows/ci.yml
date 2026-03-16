@@ -1,13 +1,60 @@
-name: run-ci
-on: [push]
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
 jobs:
-  run-tests:
-    runs-on: ubuntu-24.04
+  audit:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: hashicorp/setup-golang@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
         with:
-          version-file: go.mod
-      - name: Vet
+          go-version: "stable"
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Go vet
+        run: go vet ./...
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: staticcheck ./...
+
+      - name: Install golint
+        run: go install golang.org/x/lint/golint@latest
+
+      - name: Run golint
+        run: golint ./...
+
+      - name: Install gofumpt
+        run: go install mvdan.cc/gofumpt@latest
+
+      - name: Run gofumpt
         run: |
-          make vet
+          if [[ $(gofumpt -l .) ]]; then
+            printf "Format error in the following file(s).\n"
+            gofumpt -l .
+          fi
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Build
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o mm

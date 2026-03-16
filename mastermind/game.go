@@ -17,10 +17,10 @@ func (r Result) ToString() string {
 
 // This is the structure representing a mastermind game
 type Game struct {
-	Pegs             int
-	Colors           string
-	Secret           string
-	CandidateChooser CandidateChooser
+	Pegs    int
+	Colors  string
+	Secret  string
+	Chooser candidateChooser
 }
 
 func (game *Game) validateSecret() error {
@@ -73,7 +73,7 @@ func (game *Game) Solve() error {
 	guess := game.generateInitialGuess()
 	for {
 		result = game.validateGuess(guess)
-		numGuesses += 1
+		numGuesses++
 		fmt.Printf("%2d: guess %s %-*s [from %d]\n", numGuesses, guess, game.Pegs, result.ToString(), len(solutionSpace))
 		if result[0] == game.Pegs {
 			return nil
@@ -81,7 +81,7 @@ func (game *Game) Solve() error {
 
 		solutionSpace = eliminateSolutionSpace(solutionSpace, result, guess)
 		if len(solutionSpace) > 0 {
-			guess = game.CandidateChooser.Choose(solutionSpace)
+			guess = game.Chooser.choose(solutionSpace)
 		} else {
 			panic("No candidate solution left.\n")
 		}
@@ -96,10 +96,10 @@ func validateGuess(secret string, guess string) Result {
 	for i, g := range guess {
 		s := rune(secret[i])
 		if g == s {
-			correctPositions += 1
+			correctPositions++
 		} else {
 			if strings.ContainsRune(secret, g) {
-				correctColors += 1
+				correctColors++
 			}
 		}
 	}
