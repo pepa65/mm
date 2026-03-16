@@ -25,12 +25,12 @@ type Game struct {
 
 func (game *Game) validateSecret() error {
 	if len(game.Secret) != game.Pegs {
-		return fmt.Errorf("The length of the secret should be %d", game.Pegs)
+		return fmt.Errorf("the length of the secret should be %d", game.Pegs)
 	}
 
 	for _, s := range game.Secret {
 		if !strings.ContainsRune(game.Colors, s) {
-			return fmt.Errorf("The secret contains invalid symbols")
+			return fmt.Errorf("the secret contains invalid symbols")
 		}
 	}
 	return nil

@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/github/license/pepa65/mastermind.svg)](LICENSE)
 [![run-ci](https://github.com/pepa65/mastermind/actions/workflows/ci.yml/badge.svg)](https://github.com/pepa65/mastermind/actions/workflows/ci.yml)
 
-# mm v0.2.2
+# mm v0.2.3
 **Mastermind**
 
 A [Golang](http://golang.org/) implementation of the solution to the [MasterMind](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29) game.

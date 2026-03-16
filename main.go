@@ -11,22 +11,22 @@ import (
 )
 
 const (
-	version = "0.2.2"
+	version = "0.2.3"
 	pegs    = 8
 	colors  = 10
 )
 
 func main() {
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	var secret string
 	if len(os.Args) > 2 {
 		fmt.Printf("mm v%s - Mastermind\nUsage:  mm [secret]\n", version)
 		os.Exit(-1)
 	} else if len(os.Args) == 1 {
-		rand.Seed(time.Now().UnixNano())
 		s := 0
 		n := pegs
 		for {
-			s += rand.Intn(colors)
+			s += rnd.Intn(colors)
 			if n < 1 {
 				break
 			}

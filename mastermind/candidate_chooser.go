@@ -13,13 +13,7 @@ type candidateChooser interface {
 type RandomCandidateChooser struct{}
 
 func (chooser RandomCandidateChooser) choose(solutionSpace []string) string {
-	rand.Seed(time.Now().Unix())
-	r := rand.Intn(len(solutionSpace))
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := rnd.Intn(len(solutionSpace))
 	return solutionSpace[r]
-}
-
-type premierCandidateChooser struct{}
-
-func (chooser premierCandidateChooser) choose(solutionSpace []string) string {
-	return solutionSpace[0]
 }
