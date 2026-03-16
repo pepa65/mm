@@ -2,30 +2,51 @@ package main
 
 import (
 	"fmt"
-	"github.com/kevinjqiu/mastermind/mastermind"
+	"math/rand"
 	"os"
+	"strconv"
+	"time"
+
+	"github.com/pepa65/mastermind/mastermind"
+)
+
+const (
+	version = "0.2.0"
+	pegs   = 8
+	colors = 10
 )
 
 func main() {
-	if len(os.Args) != 2 {
+	var secret string
+	if len(os.Args) > 2 {
 		fmt.Printf("Usage: mastermind [secret]\n")
 		os.Exit(-1)
+	} else if len(os.Args) == 1 {
+		rand.Seed(time.Now().UnixNano())
+		s := 0
+		n := pegs
+		for {
+			s += rand.Intn(colors)
+			n -= 1
+			if n == 0 {
+				break
+			}
+			s *= 10
+		}
+		secret = strconv.Itoa(s)
+	} else {
+		secret = os.Args[1]
 	}
-
-	secret := os.Args[1]
-
+	fmt.Printf("Secret:   %s\n", secret)
 	game := mastermind.Game{
-		NumOfPegs:        4,
-		Symbols:          "123456",
+		Pegs:             pegs,
+		Colors:           "0123456789ABCDEFGKLMNOPQRSTUVXXYZ"[:colors],
 		Secret:           secret,
 		CandidateChooser: &mastermind.RandomCandidateChooser{},
 	}
-
-	if numSteps, err := game.Solve(); err != nil {
+	if err := game.Solve(); err != nil {
 		fmt.Println(err)
 		os.Exit(-2)
-	} else {
-		fmt.Printf("Solved in %d steps\n", numSteps)
-		os.Exit(0)
 	}
+	os.Exit(0)
 }

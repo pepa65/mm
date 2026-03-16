@@ -11,24 +11,25 @@ import (
 type Result [2]int
 
 func (r Result) ToString() string {
-	return fmt.Sprintf("(%d, %d)", r[0], r[1])
+	//return fmt.Sprintf("(%d,%d)", r[0], r[1])
+	return strings.Repeat("+", r[0]) + strings.Repeat("-", r[1])
 }
 
 // This is the structure representing a mastermind game
 type Game struct {
-	NumOfPegs        int
-	Symbols          string
+	Pegs             int
+	Colors           string
 	Secret           string
 	CandidateChooser CandidateChooser
 }
 
 func (game *Game) validateSecret() error {
-	if len(game.Secret) != game.NumOfPegs {
-		return fmt.Errorf("The length of the secret should be %d", game.NumOfPegs)
+	if len(game.Secret) != game.Pegs {
+		return fmt.Errorf("The length of the secret should be %d", game.Pegs)
 	}
 
 	for _, s := range game.Secret {
-		if !strings.ContainsRune(game.Symbols, s) {
+		if !strings.ContainsRune(game.Colors, s) {
 			return fmt.Errorf("The secret contains invalid symbols")
 		}
 	}
@@ -36,20 +37,21 @@ func (game *Game) validateSecret() error {
 }
 
 func (game *Game) generateInitialGuess() string {
-	var guess []rune
-	for i := 0; i < (game.NumOfPegs+1)/2; i++ {
-		guess = append(guess, rune(game.Symbols[0]))
+	/*var guess []rune
+	for i := 0; i < (game.Pegs+1)/2; i++ {
+		guess = append(guess, rune(game.Colors[0]))
 	}
-	for i := 0; i < game.NumOfPegs/2; i++ {
-		guess = append(guess, rune(game.Symbols[1]))
+	for i := 0; i < game.Pegs/2; i++ {
+		guess = append(guess, rune(game.Colors[1]))
 	}
-	return string(guess)
+	return string(guess)*/
+	return "00112233445566778899AABBCCDDEEFFGGHH"[:game.Pegs]
 }
 
 func (game *Game) generateSolutionSpace() []string {
-	sets := make([]string, game.NumOfPegs)
-	for i := 0; i < game.NumOfPegs; i++ {
-		sets[i] = game.Symbols
+	sets := make([]string, game.Pegs)
+	for i := 0; i < game.Pegs; i++ {
+		sets[i] = game.Colors
 	}
 	return cartesianProduct(sets)
 }
@@ -58,31 +60,25 @@ func (game *Game) validateGuess(guess string) Result {
 	return validateGuess(game.Secret, guess)
 }
 
-func (game *Game) Solve() (int, error) {
+func (game *Game) Solve() error {
 	if err := game.validateSecret(); err != nil {
-		return 0, err
+		return err
 	}
 
 	var (
 		result     Result
 		numGuesses int
 	)
-
 	solutionSpace := game.generateSolutionSpace()
 	guess := game.generateInitialGuess()
-
 	for {
-		fmt.Printf("|solution_space| = %d\n", len(solutionSpace))
-		fmt.Printf("guess = %s\n", guess)
-
 		result = game.validateGuess(guess)
 		numGuesses += 1
-
-		fmt.Printf("result = %s\n", result.ToString())
-
-		if result[0] == game.NumOfPegs {
-			return numGuesses, nil
+		fmt.Printf("%2d: guess %s %-*s [from %d]\n", numGuesses, guess, game.Pegs, result.ToString(), len(solutionSpace))
+		if result[0] == game.Pegs {
+			return nil
 		}
+
 		solutionSpace = eliminateSolutionSpace(solutionSpace, result, guess)
 		if len(solutionSpace) > 0 {
 			guess = game.CandidateChooser.Choose(solutionSpace)
@@ -95,21 +91,19 @@ func (game *Game) Solve() (int, error) {
 func validateGuess(secret string, guess string) Result {
 	var (
 		correctPositions int
-		correctSymbols   int
+		correctColors    int
 	)
-
 	for i, g := range guess {
 		s := rune(secret[i])
 		if g == s {
 			correctPositions += 1
 		} else {
 			if strings.ContainsRune(secret, g) {
-				correctSymbols += 1
+				correctColors += 1
 			}
 		}
 	}
-
-	return Result{correctPositions, correctSymbols}
+	return Result{correctPositions, correctColors}
 }
 
 func eliminateSolutionSpace(solutionSpace []string, result Result, guess string) []string {
@@ -119,6 +113,5 @@ func eliminateSolutionSpace(solutionSpace []string, result Result, guess string)
 			retval = append(retval, candidate)
 		}
 	}
-
 	return retval
 }

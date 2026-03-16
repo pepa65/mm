@@ -5,14 +5,12 @@ import (
 	"time"
 )
 
-// This is the strategy that governs how the candidate is chosen
-// given a solution space
+// This is the strategy that governs how the candidate is chosen given a solution space
 type CandidateChooser interface {
 	Choose(solutionSpace []string) string
 }
 
-type RandomCandidateChooser struct {
-}
+type RandomCandidateChooser struct{}
 
 func (chooser RandomCandidateChooser) Choose(solutionSpace []string) string {
 	rand.Seed(time.Now().Unix())

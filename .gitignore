@@ -1,4 +1,1 @@
-*.beam
-
-.ropeproject/
-mm
+/mm

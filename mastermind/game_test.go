@@ -2,15 +2,16 @@ package mastermind
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidateSecretEmptySecret(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 3,
-		Symbols:   "1234",
-		Secret:    "",
+		Pegs:   3,
+		Colors: "0123",
+		Secret: "",
 	}
 	var err = game.validateSecret()
 	assert.Equal(t, err, fmt.Errorf("The length of the secret should be 3"))
@@ -18,9 +19,9 @@ func TestValidateSecretEmptySecret(t *testing.T) {
 
 func TestValidateSecretLongerThanPegs(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 3,
-		Symbols:   "1234",
-		Secret:    "1234",
+		Pegs:   3,
+		Colors: "0123",
+		Secret: "0123",
 	}
 	var err = game.validateSecret()
 	assert.Equal(t, err, fmt.Errorf("The length of the secret should be 3"))
@@ -28,9 +29,9 @@ func TestValidateSecretLongerThanPegs(t *testing.T) {
 
 func TestValidateSecretContainsIllegalSymbol(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234",
-		Secret:    "123a",
+		Pegs:   4,
+		Colors: "0123",
+		Secret: "1234",
 	}
 	var err = game.validateSecret()
 	assert.Equal(t, err, fmt.Errorf("The secret contains invalid symbols"))
@@ -38,9 +39,9 @@ func TestValidateSecretContainsIllegalSymbol(t *testing.T) {
 
 func TestValidateSecretNoError(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234",
-		Secret:    "1234",
+		Pegs:   4,
+		Colors: "0123",
+		Secret: "0123",
 	}
 	var err = game.validateSecret()
 	assert.Nil(t, err)
@@ -48,71 +49,71 @@ func TestValidateSecretNoError(t *testing.T) {
 
 func TestValidateGuessAllCorrect(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234",
-		Secret:    "1234",
+		Pegs:   4,
+		Colors: "0123",
+		Secret: "0123",
 	}
-	assert.Equal(t, game.validateGuess("1234"), Result{4, 0})
+	assert.Equal(t, game.validateGuess("0123"), Result{4, 0})
 }
 
 func TestValidateGuessNoneCorrect(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234567890",
-		Secret:    "1234",
+		Pegs:   4,
+		Colors: "0123456789",
+		Secret: "0123",
 	}
 	assert.Equal(t, game.validateGuess("5678"), Result{0, 0})
 }
 
-func TestValidateGuessAllSymbolsCorrect(t *testing.T) {
+func TestValidateGuessAllColorsCorrect(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234567890",
-		Secret:    "1234",
+		Pegs:   4,
+		Colors: "0123456789",
+		Secret: "0123",
 	}
-	assert.Equal(t, game.validateGuess("4321"), Result{0, 4})
+	assert.Equal(t, game.validateGuess("3210"), Result{0, 4})
 }
 
-func TestValidateGuessRepeatedSymbols(t *testing.T) {
+func TestValidateGuessRepeatedColors(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "1234567890",
-		Secret:    "1234",
+		Pegs:   4,
+		Colors: "0123456789",
+		Secret: "0123",
 	}
-	assert.Equal(t, game.validateGuess("1122"), Result{1, 3})
+	assert.Equal(t, game.validateGuess("2233"), Result{1, 3})
 }
 
 func TestGenerateSolutionSpace(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 2,
-		Symbols:   "123",
+		Pegs:   2,
+		Colors: "012",
 	}
 	assert.Equal(
 		t, game.generateSolutionSpace(),
-		[]string{"11", "21", "31", "12", "22", "32", "13", "23", "33"},
+		[]string{"00", "10", "20", "01", "11", "21", "02", "12", "22"},
 	)
 }
 
 func TestGenerateInitialGuess(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 2,
-		Symbols:   "123",
+		Pegs:   9,
+		Colors: "0123456789",
 	}
-	assert.Equal(t, game.generateInitialGuess(), "12")
+	assert.Equal(t, game.generateInitialGuess(), "001122334")
 }
 
 func TestGenerateInitialGuessFourPegs(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 4,
-		Symbols:   "123",
+		Pegs:   4,
+		Colors: "012",
 	}
-	assert.Equal(t, game.generateInitialGuess(), "1122")
+	assert.Equal(t, game.generateInitialGuess(), "0011")
 }
 
 func TestGenerateInitialGuessThreePegs(t *testing.T) {
 	var game = Game{
-		NumOfPegs: 3,
-		Symbols:   "123",
+		Pegs:   3,
+		Colors: "012",
 	}
-	assert.Equal(t, game.generateInitialGuess(), "112")
+	assert.Equal(t, game.generateInitialGuess(), "001")
 }

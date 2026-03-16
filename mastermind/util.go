@@ -3,15 +3,13 @@ package mastermind
 import "math"
 
 func cartesianProduct(sets []string) []string {
-	// Transliterated from:
-	// http://stackoverflow.com/questions/2419370/how-can-i-compute-a-cartesian-product-iteratively
+	// Transliterated from: http://stackoverflow.com/questions/2419370/how-can-i-compute-a-cartesian-product-iteratively
 	var (
 		i      int
 		j      int
 		item   []rune
 		result []string
 	)
-
 	for {
 		item = []rune{}
 		j = i
@@ -25,6 +23,5 @@ func cartesianProduct(sets []string) []string {
 		result = append(result, string(item))
 		i += 1
 	}
-
 	return result
 }
