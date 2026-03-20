@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/github/license/pepa65/mm.svg)](LICENSE)
 [![run-ci](https://github.com/pepa65/mm/actions/workflows/ci.yml/badge.svg)](https://github.com/pepa65/mm/actions/workflows/ci.yml)
 
-# mm v0.5.2
+# mm v0.5.3
 **Mastermind**
 
 Solving [MasterMind](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29) games, a [Golang](http://golang.org/) implementation.
@@ -13,7 +13,7 @@ Solving [MasterMind](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29) g
 
 ## Usage
 ```
-mm v0.5.2 - Mastermind
+mm v0.5.3 - Mastermind
 Usage:  mm [PEGS COLORS]
   PEGS:    Number of positions [default: 8]
   COLORS:  String of all permissible characters [default: 0123456789]
@@ -33,7 +33,7 @@ mv mm ~/bin/  # Assuming ~/bin is in PATH
 
 ### Download
 ```
-wget -O mm github.com/pepa65/mm/releases/download/v0.5.2/mm_0.5.2_linux_amd64
+wget -O mm github.com/pepa65/mm/releases/download/v0.5.3/mm_0.5.3_linux_amd64
 chmod +x mm
 mv mm ~/bin/  # Provided ~/bin is in $PATH
 ```

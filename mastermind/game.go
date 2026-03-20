@@ -46,7 +46,7 @@ func (game *Game) generateInitialGuess() string {
 			break
 		}
 	}
-	for _ = range game.Pegs - len(guess) {
+	for range game.Pegs - len(guess) {
 		guess = append(guess, rune(game.Colors[0]))
 	}
 	return string(guess)
